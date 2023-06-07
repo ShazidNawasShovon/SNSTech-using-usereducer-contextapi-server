@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ijm0a.mongodb.net/?retryWrites=true&w=majority`;
+const uri =process.env.MONGO_URI;
 
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
@@ -22,11 +22,17 @@ const run = async () => {
   try {
     const db = client.db("SNSTech");
     const productCollection = db.collection("Products");
+    const itemCollection = db.collection("Items");
 
     app.get("/products", async (req, res) => {
       const cursor = productCollection.find({});
       const product = await cursor.toArray();
 
+      res.send({ status: true, data: product });
+    });
+    app.get("/items", async (req, res) => {
+      const cursor = itemCollection.find({});
+      const product = await cursor.toArray();
       res.send({ status: true, data: product });
     });
 
